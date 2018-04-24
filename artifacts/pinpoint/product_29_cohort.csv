@@ -1,0 +1,17 @@
+ChannelType,User.UserAttributes.Id,Attributes.Prediction_ProductID,Address,Demographic.Platform
+EMAIL,33,29,dylatong@amazon.com,Android
+EMAIL,38,29,customer38@amazon.com,Android
+EMAIL,54,29,customer54@amazon.com,Android
+EMAIL,64,29,customer64@amazon.com,Android
+EMAIL,71,29,customer71@amazon.com,Android
+EMAIL,77,29,customer77@amazon.com,Android
+EMAIL,79,29,customer79@amazon.com,Android
+EMAIL,92,29,customer92@amazon.com,IOS
+EMAIL,106,29,customer106@amazon.com,IOS
+EMAIL,131,29,customer131@amazon.com,Android
+EMAIL,136,29,customer136@amazon.com,Android
+EMAIL,165,29,customer165@amazon.com,IOS
+EMAIL,189,29,customer189@amazon.com,IOS
+EMAIL,191,29,customer191@amazon.com,Android
+EMAIL,194,29,customer194@amazon.com,IOS
+EMAIL,195,29,customer195@amazon.com,IOS
