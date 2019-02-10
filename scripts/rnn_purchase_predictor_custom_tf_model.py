@@ -36,10 +36,9 @@ def _input_fn(data_dir, file_names, epochs, do_shuffle, hyperparameters):
     sldf = pd.read_csv(os.path.join(data_dir, file_names["SL"]), 
                        compression="gzip", header=0, index_col=0, sep=",", dtype=np.float32)
 
-    M = xdf.shape[0]/hyperparameters["MAX_TIMESTEP"]
-    X = xdf.as_matrix().reshape(M, hyperparameters["MAX_TIMESTEP"], hyperparameters["INPUT_SIZE"])
-    Y = ydf.as_matrix().reshape(M, hyperparameters["MAX_TIMESTEP"], hyperparameters["INPUT_SIZE"])
-    SL = sldf.as_matrix().reshape(M,)
+    X = xdf.as_matrix().reshape(-1, hyperparameters["MAX_TIMESTEP"], hyperparameters["INPUT_SIZE"])
+    Y = ydf.as_matrix().reshape(-1, hyperparameters["MAX_TIMESTEP"], hyperparameters["INPUT_SIZE"])
+    SL = sldf.as_matrix().reshape(-1,)
     
     return tf.estimator.inputs.numpy_input_fn(
         x = {INPUT_TENSOR_NAME: X, SL_TENSOR_NAME: SL},
@@ -162,13 +161,11 @@ def model_fn(features, labels, mode, hyperparameters):
                                               export_outputs= export_outputs)
             
     with tf.name_scope('loss'):
-        weighted_targets = tf.multiply(y, hyperparameters["MSE_POS_WEIGHT"])
         
-        mse = tf.reduce_sum(tf.losses.mean_squared_error(
-                                predictions = tf.reshape(fc_o1, [-1, hyperparameters["OUTPUT_SIZE"]]),
-                                labels = tf.reshape(weighted_targets, [-1, hyperparameters["OUTPUT_SIZE"]])))
-
-        loss= tf.divide(mse,tf.cast(hyperparameters["BATCH_SIZE"], tf.float32), name="metric_loss")
+        cross_entropy = tf.nn.sigmoid_cross_entropy_with_logits(logits=tf.reshape(fc_o1, [-1, hyperparameters["OUTPUT_SIZE"]]),
+                                                                labels=tf.reshape(y, [-1, hyperparameters["OUTPUT_SIZE"]]))
+        
+        loss = tf.reduce_mean(cross_entropy, name="metric_loss")
         tf.summary.scalar('loss', loss)
         
     with tf.name_scope('train') :
